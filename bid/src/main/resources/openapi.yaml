@@ -1,0 +1,229 @@
+openapi: 3.0.2
+info:
+  title: bid
+  version: 1.0.0
+paths:
+  '/api/v1/deals/{idDeal}/bids/{idBid}':
+    get:
+      responses:
+        '200':
+          $ref: '#/components/responses/ResponseBid'
+        '400':
+          $ref: '#/components/responses/ReponseError'
+        '404':
+          $ref: '#/components/responses/ReponseError'
+        '500':
+          $ref: '#/components/responses/ReponseError'
+      operationId: getBidById
+      summary: get BidBy Id
+    parameters:
+      -
+        examples:
+          id deal:
+            value: '62'
+        name: idDeal
+        schema:
+          type: number
+        in: path
+        required: true
+      -
+        examples:
+          id bid:
+            value: '2'
+        name: idBid
+        schema:
+          type: number
+        in: path
+        required: true
+  '/api/v1/deals/{idDeal}/bids':
+    summary: Crud of bids
+    get:
+      parameters:
+        -
+          examples:
+            id deal:
+              value: '6'
+          name: idDeal
+          schema:
+            type: number
+          in: path
+          required: true
+      responses:
+        '200':
+          $ref: '#/components/responses/Bids'
+        '400':
+          $ref: '#/components/responses/ReponseError'
+        '404':
+          $ref: '#/components/responses/ReponseError'
+        '500':
+          $ref: '#/components/responses/ReponseError'
+      operationId: listBids
+      summary: listBids
+    put:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Bid'
+            examples:
+              body for edit one bid:
+                value:
+                  user_id: 58
+                  accepted: true
+                  value: 87
+                  description: some text
+        required: true
+      parameters:
+        -
+          examples:
+            id deal:
+              value: '2'
+          name: idDeal
+          schema:
+            type: number
+          in: path
+          required: true
+        -
+          name: idBid
+          description: ''
+          schema:
+            type: number
+          in: query
+          required: true
+        -
+          name: token
+          description: token
+          schema:
+            type: string
+          in: header
+          required: true
+      responses:
+        '200':
+          $ref: '#/components/responses/ResponseBid'
+        '400':
+          $ref: '#/components/responses/ReponseError'
+        '404':
+          $ref: '#/components/responses/ReponseError'
+        '500':
+          $ref: '#/components/responses/ReponseError'
+      operationId: updateOneBid
+      summary: updateOneBid
+      description: updateOneBid
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Bid'
+            examples:
+              Body for create a bid:
+                value:
+                  user_id: 76
+                  accepted: true
+                  value: 42
+                  description: some text
+        required: true
+      parameters:
+        -
+          examples:
+            id deal:
+              value: '4'
+          name: idDeal
+          schema:
+            type: number
+          in: path
+          required: true
+        -
+          name: token
+          description: token
+          schema:
+            type: string
+          in: header
+          required: true
+      responses:
+        '200':
+          $ref: '#/components/responses/ResponseBid'
+        '400':
+          $ref: '#/components/responses/ReponseError'
+        '404':
+          $ref: '#/components/responses/ReponseError'
+        '500':
+          $ref: '#/components/responses/ReponseError'
+      operationId: createOneBid
+      summary: create one bid
+components:
+  schemas:
+    Error:
+      title: Root Type for Error
+      description: ''
+      type: object
+      properties:
+        error:
+          type: string
+      example:
+        error: error
+    Bid:
+      title: Root Type for Bid
+      description: ''
+      type: object
+      properties:
+        user_id:
+          format: int32
+          type: integer
+        accepted:
+          type: boolean
+        value:
+          format: int32
+          type: integer
+        description:
+          type: string
+      example:
+        user_id: 123
+        accepted: false
+        value: 120
+        description: pago na hora
+  responses:
+    ResponseBid:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Bid'
+          examples:
+            ReponseBid:
+              value:
+                user_id: 123
+                accepted: false
+                value: 120
+                description: pago na hora
+      description: ''
+    ReponseError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            Error:
+              value:
+                error: some text
+      description: ''
+    Bids:
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Bid'
+          examples:
+            Bids:
+              value:
+                -
+                  user_id: 56
+                  accepted: true
+                  value: 45
+                  description: some text
+                -
+                  user_id: 96
+                  accepted: true
+                  value: 45
+                  description: some text
+      description: ''

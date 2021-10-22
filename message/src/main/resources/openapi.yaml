@@ -1,0 +1,224 @@
+openapi: 3.0.2
+info:
+  title: message
+  version: 1.0.0
+paths:
+  '/api/v1/deals/{idDeal}/message':
+    get:
+      responses:
+        '200':
+          $ref: '#/components/responses/Messages'
+        '400':
+          $ref: '#/components/responses/ResponseError'
+        '404':
+          $ref: '#/components/responses/ResponseError'
+        '500':
+          $ref: '#/components/responses/ResponseError'
+      operationId: getMessageOfDeal
+    parameters:
+      -
+        examples:
+          id deal:
+            value: '13'
+        name: idDeal
+        schema:
+          type: number
+        in: path
+        required: true
+  '/api/v1/deals/{idDeal}/message/{id}':
+    get:
+      responses:
+        '200':
+          $ref: '#/components/responses/MessageResponse'
+        '400':
+          $ref: '#/components/responses/ResponseError'
+        '404':
+          $ref: '#/components/responses/ResponseError'
+        '500':
+          $ref: '#/components/responses/ResponseError'
+      operationId: getMessageById
+    put:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Message'
+            examples:
+              Payload required:
+                value:
+                  user_id: 6
+                  title: some text
+                  message: some text
+        required: true
+      parameters:
+        -
+          name: token
+          description: token user authenticate
+          schema:
+            type: string
+          in: header
+          required: true
+      responses:
+        '200':
+          $ref: '#/components/responses/MessageResponse'
+        '400':
+          $ref: '#/components/responses/ResponseError'
+        '404':
+          $ref: '#/components/responses/ResponseError'
+        '500':
+          $ref: '#/components/responses/ResponseError'
+      operationId: updateOneMessage
+      summary: Update One message
+    parameters:
+      -
+        examples:
+          id of deal:
+            value: '123'
+        name: idDeal
+        description: id of deal
+        schema:
+          type: number
+        in: path
+        required: true
+      -
+        examples:
+          id of message:
+            value: '23'
+        name: id
+        description: id of message
+        schema:
+          type: number
+        in: path
+        required: true
+  /api/v1/deals/message/:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Message'
+            examples:
+              Message:
+                value:
+                  user_id: 32
+                  title: some text
+                  message: some text
+        required: true
+      parameters:
+        -
+          name: idDeal
+          description: ''
+          schema:
+            type: number
+          in: query
+          required: true
+        -
+          name: token
+          description: token user authenticate
+          schema:
+            type: string
+          in: header
+          required: true
+      responses:
+        '200':
+          $ref: '#/components/responses/MessageResponse'
+        '400':
+          $ref: '#/components/responses/ResponseError'
+        '404':
+          $ref: '#/components/responses/ResponseError'
+        '500':
+          $ref: '#/components/responses/ResponseError'
+      operationId: createOneMessage
+      summary: create a message for deal
+components:
+  schemas:
+    Error:
+      title: Root Type for Error
+      description: ''
+      type: object
+      properties:
+        error:
+          type: string
+      example:
+        error: error
+    Message:
+      title: Root Type for Mensagem
+      description: message of an offer
+      type: object
+      properties:
+        user_id:
+          format: int32
+          type: integer
+        title:
+          type: string
+        message:
+          type: string
+      example:
+        user_id: 31
+        title: some text
+        message: some text
+    MessageResponse:
+      title: Root Type for MessageResponse
+      description: ''
+      type: object
+      properties:
+        user_id:
+          format: int32
+          type: integer
+        title:
+          type: string
+        message:
+          type: string
+        id:
+          format: int32
+          type: integer
+      example:
+        user_id: 31
+        title: some text
+        message: some text
+        id: 1
+  responses:
+    ResponseError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            Response Error:
+              value:
+                error: some text
+      description: ''
+    MessageResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MessageResponse'
+          examples:
+            Message Response:
+              value:
+                user_id: 83
+                title: some text
+                message: some text
+                id: 63
+      description: ''
+    Messages:
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/MessageResponse'
+          examples:
+            Messages:
+              value:
+                -
+                  user_id: 77
+                  title: some text
+                  message: some text
+                  id: 88
+                -
+                  user_id: 78
+                  title: some text
+                  message: some text
+                  id: 44
+      description: ''

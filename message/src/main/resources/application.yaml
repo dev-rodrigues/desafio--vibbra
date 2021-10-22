@@ -1,0 +1,78 @@
+spring:
+  zipkin:
+    base-url: ${ZIPKIN_URL:http://localhost:9411/}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8080/auth/realms/clientes/protocol/openid-connect/certs
+          issuer-uri: http://localhost:8180/auth/realms/clientes
+  datasource:
+    driverClassName: org.h2.Driver
+    password: password
+    username: sa
+    url: jdbc:h2:file:./data/message
+  h2:
+    console:
+      path: /h2-console
+      enabled: 'true'
+      settings:
+        web-allow-others: 'true'
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.H2Dialect
+  application:
+    name: message
+
+logging:
+  level:
+    com:
+      vibbra:
+        deal:
+          datasources:
+            feign: DEBUG
+    org:
+      springframework:
+        security: DEBUG
+
+server:
+  port: '8082'
+
+keycloak:
+  realm: clientes
+  auth-server-url: http://localhost:8080/auth
+  ssl-required: external
+  resource: teste
+  bearer-only: true
+
+authenticate:
+  host: http://localhost:8080/auth/realms/clientes/protocol/openid-connect/token
+
+
+springdoc:
+  api-docs:
+    path: /api-documentation
+  swagger-ui:
+    path: /swagger-ui-custom.html
+
+#eureka:
+#  client:
+#    fetch-registry: true
+#    register-with-eureka: true
+#    service-url:
+#      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}
+#  instance:
+#    lease-expiration-duration-in-seconds: 2
+#    lease-renewal-interval-in-seconds: 1
+
+feign:
+  circuitbreaker:
+    enabled: true
+  client:
+    config:
+      deal-client:
+        numberRetry: 5
+        retryInterval: 5000
+        connectTimeout: 5000
+        readTimeout: 5000

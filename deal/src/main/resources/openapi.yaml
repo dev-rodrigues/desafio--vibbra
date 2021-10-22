@@ -1,0 +1,460 @@
+openapi: 3.0.2
+info:
+  title: Deal
+  version: 1.0.0
+  description: definition of a negotiation
+paths:
+  /deal:
+    get:
+      responses:
+        '200':
+          $ref: '#/components/responses/Deals'
+        '400':
+          $ref: '#/components/responses/ResponseError'
+        '404':
+          $ref: '#/components/responses/ResponseError'
+        '500':
+          $ref: '#/components/responses/ResponseError'
+      operationId: listDeals
+      summary: list all deals
+    put:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestNewDeal'
+        required: true
+      parameters:
+        -
+          name: id
+          description: id of deal
+          schema:
+            type: number
+          in: query
+          required: true
+      responses:
+        '200':
+          $ref: '#/components/responses/ResponseNewDeal'
+        '400':
+          $ref: '#/components/responses/ResponseError'
+        '404':
+          $ref: '#/components/responses/ResponseError'
+        '500':
+          $ref: '#/components/responses/ResponseError'
+      operationId: updateAdeal
+      summary: Update a deal
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestNewDeal'
+        required: true
+      responses:
+        '200':
+          $ref: '#/components/responses/ResponseNewDeal'
+        '400':
+          $ref: '#/components/responses/ResponseError'
+        '404':
+          $ref: '#/components/responses/ResponseError'
+        '500':
+          $ref: '#/components/responses/ResponseError'
+      operationId: persistAdeal
+      summary: Persist a Deal
+    parameters:
+      -
+        name: token
+        description: user token authenticate
+        schema:
+          type: string
+        in: header
+        required: true
+  '/deal/{id}':
+    get:
+      parameters:
+        -
+          examples:
+            id of deal:
+              value: '3'
+          name: id
+          schema:
+            type: number
+          in: path
+          required: true
+      responses:
+        '200':
+          $ref: '#/components/responses/ResponseNewDeal'
+        '400':
+          $ref: '#/components/responses/ResponseError'
+        '404':
+          $ref: '#/components/responses/ResponseError'
+        '500':
+          $ref: '#/components/responses/ResponseError'
+      operationId: getBidById
+      summary: get deal by id
+    parameters:
+      -
+        name: token
+        description: user token authentication
+        schema:
+          type: string
+        in: header
+        required: true
+components:
+  schemas:
+    Location:
+      title: Root Type for Location
+      description: Defining a transaction location
+      type: object
+      properties:
+        lat:
+          format: double
+          type: number
+        lng:
+          format: double
+          type: number
+        address:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        zip_code:
+          format: int32
+          type: integer
+      example:
+        lat: 123.123
+        lng: 123.123
+        address: address
+        city: city
+        state: state
+        zip_code: 22222222
+    Urgency:
+      title: Root Type for Urgency
+      description: Definition of an urgency for a transaction
+      required:
+        - type
+        - limit_date
+      type: object
+      properties:
+        type:
+          description: types of urgency
+          enum:
+            - Baixa
+            - Média
+            - Alta
+          type: string
+        limit_date:
+          format: date
+          description: transaction deadline
+          type: string
+      example:
+        type: 1
+        limit_date: 2021/10/08
+    TypesOfDeals:
+      title: Root Type for TypesOfDeals
+      description: types of deals defined
+      type: object
+      properties:
+        type:
+          enum:
+            - Venda
+            - Troca
+            - Desejo
+          type: string
+      example:
+        type: Venda
+    RequestNewDeal:
+      title: Root Type for RequestNewDeal
+      description: ''
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/TypesOfDeals'
+        value:
+          format: double
+          type: number
+        description:
+          type: string
+        trade_for:
+          type: string
+        location:
+          $ref: '#/components/schemas/Location'
+          properties:
+            lat:
+              format: int32
+              type: integer
+            lng:
+              format: int32
+              type: integer
+            address:
+              type: string
+            city:
+              type: string
+            state:
+              type: string
+            zip_code:
+              format: int32
+              type: integer
+        urgency:
+          $ref: '#/components/schemas/Urgency'
+          properties:
+            type:
+              type: string
+            limit_date:
+              type: string
+        photos:
+          type: array
+          items:
+            type: string
+      example:
+        type: Venda
+        value: 200
+        description: Descrição
+        trade_for: Trade for
+        location:
+          lat: 200
+          lng: 200
+          address: QNM 34
+          city: TAGUATINGA
+          state: DF
+          zip_code: 72120420
+        urgency:
+          type: Baixa
+          limit_date: 26-03-1994
+        photos:
+          - 'http://urlImagem.com'
+    Error:
+      title: Root Type for Error
+      description: ''
+      type: object
+      properties:
+        error:
+          type: string
+      example:
+        error: error
+    RequestAuthenticate:
+      title: Root Type for AuthenticateRequest
+      description: ''
+      type: object
+      properties:
+        login:
+          type: string
+        password:
+          type: string
+      example:
+        login: login
+        password: password
+    User:
+      title: Root Type for User
+      description: ''
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        login:
+          type: string
+        password:
+          type: string
+        location:
+          $ref: '#/components/schemas/Location'
+      example:
+        name: string
+        email: string@email.com
+        login: login
+        password: password
+        location:
+          lat: 123.123
+          lng: 123.123
+          address: address
+          city: city
+          state: state
+          zip_code: 22222222
+    ResponseAuthenticate:
+      title: Root Type for ResponseAuthenticate
+      description: ''
+      type: object
+      properties:
+        token:
+          type: string
+        user:
+          $ref: '#/components/schemas/User'
+      example:
+        token: token
+        user:
+          name: string
+          email: string@email.com
+          login: login
+          password: password
+          location:
+            lat: 123.123
+            lng: 123.123
+            address: address
+            city: city
+            state: state
+            zip_code: 22222222
+    DealResponse:
+      title: Root Type for Deal
+      description: ''
+      type: object
+      properties:
+        type:
+          type: string
+        value:
+          format: int32
+          type: integer
+        description:
+          type: string
+        trade_for:
+          type: string
+        location:
+          type: object
+          properties:
+            lat:
+              format: int32
+              type: integer
+            lng:
+              format: int32
+              type: integer
+            address:
+              type: string
+            city:
+              type: string
+            state:
+              type: string
+            zip_code:
+              format: int32
+              type: integer
+        urgency:
+          type: object
+          properties:
+            type:
+              type: string
+            limit_date:
+              type: string
+        photos:
+          type: array
+          items:
+            type: string
+        id:
+          description: ''
+          type: number
+      example:
+        id: 123
+        type: Venda
+        value: 200
+        description: Descrição
+        trade_for: Trade for
+        location:
+          lat: 200
+          lng: 200
+          address: QNM 34
+          city: TAGUATINGA
+          state: DF
+          zip_code: 72120420
+        urgency:
+          type: Baixa
+          limit_date: 26-03-1994
+        photos:
+          - 'http://urlImagem.com'
+  responses:
+    ResponseNewDeal:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DealResponse'
+          examples:
+            New Deal:
+              value:
+                type: some text
+                value: 87
+                description: some text
+                trade_for: some text
+                location:
+                  lat: 83
+                  lng: 23
+                  address: some text
+                  city: some text
+                  state: some text
+                  zip_code: 27
+                urgency:
+                  type: some text
+                  limit_date: some text
+                photos:
+                  - some text
+                  - some text
+                id: 16.73
+      description: ''
+    ResponseError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            ResponseError:
+              value:
+                error: some text
+      description: ''
+    ResponseAuthenticate:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestAuthenticate'
+          examples:
+            ResponseAuthenticate:
+              value:
+                token: token
+                user:
+                  name: string
+                  email: string@email.com
+                  login: login
+                  password: password
+                  location:
+                    lat: 123.123
+                    lng: 123.123
+                    address: address
+                    city: city
+                    state: state
+                    zip_code: 22222222
+      description: ''
+    Deals:
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/DealResponse'
+          examples:
+            deals:
+              value:
+                -
+                  value: 0
+                  description: string
+                  trade_for: string
+                  location:
+                    lat: 0
+                    lng: 0
+                    address: string
+                    city: string
+                    state: string
+                    zip_code: 0
+                  urgency:
+                    type: Baixa
+                  id: 3
+                -
+                  value: 0
+                  description: string
+                  trade_for: string
+                  location:
+                    lat: 0
+                    lng: 0
+                    address: string
+                    city: string
+                    state: string
+                    zip_code: 0
+                  urgency:
+                    type: Baixa
+                  id: 4
+      description: List of deals

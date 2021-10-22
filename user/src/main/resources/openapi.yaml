@@ -1,0 +1,572 @@
+openapi: 3.0.2
+info:
+  title: Users
+  version: 1.0.0
+  description: definition of a negotiation
+paths:
+  /authenticate:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestAuthenticate'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseAuthenticate'
+        '400':
+          $ref: '#/components/responses/ResponseError'
+        '404':
+          $ref: '#/components/responses/ResponseError'
+        '500':
+          $ref: '#/components/responses/ResponseError'
+  /users:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestNewUser'
+        required: true
+      responses:
+        '201':
+          $ref: '#/components/responses/ResponseNewUser'
+        '400':
+          $ref: '#/components/responses/ResponseError'
+        '404':
+          $ref: '#/components/responses/ResponseError'
+        '500':
+          $ref: '#/components/responses/ResponseError'
+      operationId: createUser
+  '/users/{id}':
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseGetUserById'
+        '400':
+          $ref: '#/components/responses/ResponseError'
+        '404':
+          $ref: '#/components/responses/ResponseError'
+        '500':
+          $ref: '#/components/responses/ResponseError'
+      operationId: getUserById
+    put:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestUpdateUser'
+        required: true
+      responses:
+        '200':
+          $ref: '#/components/responses/ResponseUpdateUser'
+        '400':
+          $ref: '#/components/responses/ResponseError'
+        '404':
+          $ref: '#/components/responses/ResponseError'
+        '500':
+          $ref: '#/components/responses/ResponseError'
+      operationId: updateUser
+    parameters:
+      -
+        name: id
+        description: user id
+        schema:
+          format: int64
+          type: integer
+        in: path
+        required: true
+  '/users/{id}/invites':
+    get:
+      responses:
+        '200':
+          $ref: '#/components/responses/ResponseGetInvites'
+        '400':
+          $ref: '#/components/responses/ResponseError'
+        '404':
+          $ref: '#/components/responses/ResponseError'
+        '500':
+          $ref: '#/components/responses/ResponseError'
+      operationId: getInvites
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestNewInvite'
+      responses:
+        '200':
+          $ref: '#/components/responses/ResponseNewInvite'
+        '400':
+          $ref: '#/components/responses/ResponseError'
+        '404':
+          $ref: '#/components/responses/ResponseError'
+        '500':
+          $ref: '#/components/responses/ResponseError'
+    parameters:
+      -
+        name: id
+        schema:
+          format: int64
+          type: integer
+        in: path
+        required: true
+components:
+  schemas:
+    Location:
+      title: Root Type for Location
+      description: Defining a transaction location
+      type: object
+      properties:
+        lat:
+          format: double
+          type: number
+        lng:
+          format: double
+          type: number
+        address:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        zip_code:
+          format: int32
+          type: integer
+      example:
+        lat: 123.123
+        lng: 123.123
+        address: address
+        city: city
+        state: state
+        zip_code: 22222222
+    Error:
+      title: Root Type for Error
+      description: ''
+      type: object
+      properties:
+        error:
+          type: string
+      example:
+        error: error
+    RequestAuthenticate:
+      title: Root Type for AuthenticateRequest
+      description: ''
+      type: object
+      properties:
+        login:
+          type: string
+        password:
+          type: string
+      example:
+        login: login
+        password: password
+    User:
+      title: Root Type for User
+      description: ''
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        login:
+          type: string
+        password:
+          type: string
+        location:
+          $ref: '#/components/schemas/Location'
+      example:
+        name: string
+        email: string@email.com
+        login: login
+        password: password
+        location:
+          lat: 123.123
+          lng: 123.123
+          address: address
+          city: city
+          state: state
+          zip_code: 22222222
+    ResponseAuthenticate:
+      title: Root Type for ResponseAuthenticate
+      description: ''
+      type: object
+      properties:
+        token:
+          type: string
+        user:
+          $ref: '#/components/schemas/User'
+      example:
+        token: token
+        user:
+          name: string
+          email: string@email.com
+          login: login
+          password: password
+          location:
+            lat: 123.123
+            lng: 123.123
+            address: address
+            city: city
+            state: state
+            zip_code: 22222222
+    RequestNewUser:
+      title: Root Type for RequestNewUser
+      description: ''
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        login:
+          type: string
+        password:
+          type: string
+        location:
+          type: object
+          properties:
+            lat:
+              format: double
+              type: number
+            lng:
+              format: double
+              type: number
+            address:
+              type: string
+            city:
+              type: string
+            state:
+              type: string
+            zip_code:
+              format: int32
+              type: integer
+      example:
+        name: string
+        email: string@email.com
+        login: login
+        password: password
+        location:
+          lat: 123.123
+          lng: 123.123
+          address: address
+          city: city
+          state: state
+          zip_code: 22222222
+    ResponseNewUser:
+      title: Root Type for ResponseNewUser
+      description: ''
+      type: object
+      properties:
+        id:
+          format: int32
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        login:
+          type: string
+        password:
+          type: string
+        location:
+          type: object
+          properties:
+            lat:
+              format: double
+              type: number
+            lng:
+              format: double
+              type: number
+            address:
+              type: string
+            city:
+              type: string
+            state:
+              type: string
+            zip_code:
+              format: int32
+              type: integer
+      example:
+        id: 1
+        name: string
+        email: string@email.com
+        login: login
+        password: password
+        location:
+          lat: 123.123
+          lng: 123.123
+          address: address
+          city: city
+          state: state
+          zip_code: 22222222
+    ResponseGetUserById:
+      title: Root Type for ResponseGetUserById
+      description: ''
+      type: object
+      properties:
+        id:
+          format: int32
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        login:
+          type: string
+        password:
+          type: string
+        location:
+          type: object
+          properties:
+            lat:
+              format: double
+              type: number
+            lng:
+              format: double
+              type: number
+            address:
+              type: string
+            city:
+              type: string
+            state:
+              type: string
+            zip_code:
+              format: int32
+              type: integer
+      example:
+        id: 1
+        name: string
+        email: string@email.com
+        login: login
+        password: password
+        location:
+          lat: 123.123
+          lng: 123.123
+          address: address
+          city: city
+          state: state
+          zip_code: 22222222
+    RequestUpdateUser:
+      title: Root Type for RequestUpdateUser
+      description: ''
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        login:
+          type: string
+        password:
+          type: string
+        location:
+          type: object
+          properties:
+            lat:
+              format: double
+              type: number
+            lng:
+              format: double
+              type: number
+            address:
+              type: string
+            city:
+              type: string
+            state:
+              type: string
+            zip_code:
+              format: int32
+              type: integer
+      example:
+        name: string
+        email: string@email.com
+        login: login
+        password: password
+        location:
+          lat: 123.123
+          lng: 123.123
+          address: address
+          city: city
+          state: state
+          zip_code: 22222222
+    ResponseUpdateUser:
+      title: Root Type for ResponseUpdateUser
+      description: ''
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        login:
+          type: string
+        password:
+          type: string
+        location:
+          type: object
+          properties:
+            lat:
+              format: double
+              type: number
+            lng:
+              format: double
+              type: number
+            address:
+              type: string
+            city:
+              type: string
+            state:
+              type: string
+            zip_code:
+              format: int32
+              type: integer
+      example:
+        name: string
+        email: string@email.com
+        login: login
+        password: password
+        location:
+          lat: 123.123
+          lng: 123.123
+          address: address
+          city: city
+          state: state
+          zip_code: 22222222
+    Invite:
+      title: Root Type for Invite
+      description: ''
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        user:
+          format: int32
+          type: integer
+        user_invited:
+          format: int32
+          type: integer
+      example:
+        name: name
+        email: email
+        user: 1
+        user_invited: 2
+    RequestNewInvite:
+      title: Root Type for RequestNewInvite
+      description: ''
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        user:
+          format: int32
+          type: integer
+        user_invited:
+          format: int32
+          type: integer
+      example:
+        name: name
+        email: email
+        user: 1
+        user_invited: 2
+    ResponseNewInvite:
+      title: Root Type for ResponseNewInvite
+      description: ''
+      type: object
+      properties:
+        id:
+          format: int32
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        user:
+          format: int32
+          type: integer
+        user_invited:
+          format: int32
+          type: integer
+      example:
+        id: 1
+        name: name
+        email: email
+        user: 1
+        user_invited: 2
+  responses:
+    ResponseError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            ResponseError:
+              value:
+                error: some text
+      description: ''
+    ResponseAuthenticate:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ResponseAuthenticate'
+          examples:
+            ResponseAuthenticate:
+              value:
+                token: token
+                user:
+                  name: string
+                  email: string@email.com
+                  login: login
+                  password: password
+                  location:
+                    lat: 123.123
+                    lng: 123.123
+                    address: address
+                    city: city
+                    state: state
+                    zip_code: 22222222
+      description: ''
+    ResponseNewUser:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ResponseNewUser'
+      description: ''
+    ResponseGetUserById:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ResponseGetUserById'
+      description: ''
+    ResponseUpdateUser:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ResponseUpdateUser'
+      description: ''
+    ResponseGetInvites:
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Invite'
+      description: ''
+    ResponseNewInvite:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ResponseNewInvite'
+      description: ''
